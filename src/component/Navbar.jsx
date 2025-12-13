@@ -1,52 +1,92 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const isLoggedIn = false; // Later replace with real auth state
 
+  const navigate = useNavigate();
   return (
-    <nav className="w-full bg-blue-300 text-white py-4 px-6 flex justify-between items-center">
-      {/* LEFT — BRAND */}
-      <div className="text-2xl font-bold cursor-pointer">
-        LUCIFER SHOES
-      </div>
+    <nav className="w-full bg-white border-b lg:h-[25vh]">
+      {/* -------- TOP ROW -------- */}
+      <div className="flex flex-col lg:flex-row lg:items-center px-5 lg:px-10 lg:h-3/4 gap-4 lg:gap-15">
+        {/* Row 1 (Brand + Actions) */}
+        <div className="flex items-center justify-between lg:justify-start">
+          {/* Brand */}
+          <div className="text-4xl lg:text-5xl font-bold">TOMEC</div>
 
-      {/* RIGHT — MENU */}
-      <div className="flex items-center gap-8 relative">
+          {/* Right Actions */}
+          <div className="flex items-center gap-6 text-sm font-medium lg:absolute lg:right-20">
+            <div className="flex gap-1 items-center relative group">
+              <div className="relative group">
+                
+              </div>
+              <img src="/person.png" className="h-6 w-6" />
+              <button className="font-semibold text-[1.0625rem] hidden sm:block ">
+                Sign In / Join
+              </button>
+              <div class="absolute top-full right-0 hidden group-hover:block w-70 bg-white shadow z-50">
+                <div className="p-3 flex flex-col gap-2">
+                  <p className="font-semibold text-lg">WELCOME</p>
+                  <p className="font-light">To access account and manage orders</p>
+                  <button onClick={() => navigate("/login")} className="bg-[#eceb0b] w-3/4 h-12 font-bold">LOGIN/SIGNUP</button>
+                </div>
+                <hr class="border-t border-gray-300 m-4"/>
+                <div className="flex flex-col gap-4 p-3 text-lg">
+                  <div>
+                    Track your Order
+                  </div>
+                  <div>
+                    Return and Exchange
+                  </div>
+                  <div>
+                    Design of Our's
+                  </div>
+                  <div>
+                    Care
+                  </div>
+                  <div>
+                    Faq's
+                  </div>
+                </div>
 
-        <p className="cursor-pointer">Footwear</p>
-        <p className="cursor-pointer">Brands</p>
-        <p className="cursor-pointer">Accessories</p>
 
-        {/* ACCOUNT HOVER DROPDOWN */}
-        <div className="relative group">
-          <p className="cursor-pointer">Account</p>
-
-          {/* Dropdown appears when parent is hovered */}
-          <div className="
-            absolute right-0 mt-2 w-40 bg-white text-black rounded-md shadow-lg py-2 
-            opacity-0 invisible group-hover:opacity-100 group-hover:visible 
-            transition-all duration-200
-          ">
-            {!isLoggedIn ? (
-              <>
-                <p className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Welcome
-                </p>
-                <p className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  Login
-                </p>
-              </>
-            ) : (
-              <p className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                Logout
-              </p>
-            )}
+              </div>
+            </div>
+            <div className="flex gap-1 items-center">
+              <img src="/cart.png" className="h-6 w-6" />
+              <button className="font-semibold text-[1.0625rem] hidden sm:block">
+                Cart
+              </button>
+            </div>
           </div>
         </div>
 
-        <p className="cursor-pointer">Cart</p>
-        <p className="cursor-pointer">Favourites</p>
+        {/* Search Bar */}
+        <div
+          className="
+            group flex gap-5 items-center
+            border-2 border-[#ecf4f5]
+            rounded-3xl px-4 py-2
+            bg-[#ecf4f5] text-[#012832]
+            transition-colors duration-200
+            hover:border-[#256d7f]
+            w-full lg:w-1/2
+          "
+        >
+          <div className="text-sm font-semibold">SEARCH</div>
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="bg-transparent outline-none w-full"
+          />
+        </div>
+      </div>
 
+      {/* -------- BOTTOM ROW -------- */}
+      <div className="flex flex-wrap lg:flex-nowrap items-center justify-start gap-6 lg:gap-10 text-base lg:text-xl font-semibold px-5 lg:px-10 pb-4 ">
+        <button>Men</button>
+        <button>Women</button>
+        <button>Accessories</button>
+        <button>Brands</button>
+        <button>About Us</button>
       </div>
     </nav>
   );

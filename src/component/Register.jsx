@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/auth-api";
 
 const Register = () => {
@@ -11,6 +11,31 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const user = { firstName, lastName, email, password };
+
+  useEffect(() => {
+    if (!window.google) return;
+
+    google.accounts.id.initialize({
+      client_id:
+        "792908391786-mp945s7l5q09eq7kq13rfrd67rmfmb1r.apps.googleusercontent.com",
+      callback: handleGoogleResponse,
+    });
+    google.accounts.id.renderButton(document.getElementById("googleBtn"), {
+    });
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
+    const token = response.credential;
+
+    const res = await fetch("http://localhost:8082/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential: token }),
+    });
+  };
+  const handleGoogleClick = () => {
+    google.accounts.id.prompt();
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -47,11 +72,16 @@ const Register = () => {
             <p className="text-sm  text-gray-500">
               Sign up with Google or Email
             </p>
-            <button className=" w-1/2   bg-white border border-gray-300 p-1 rounded-full  text-gray-700">
+
+            {/* GOOGLE LOGIN BUTTON */}
+            <button
+              onClick={handleGoogleClick}
+              id="googleBtn" className="w-1/2"
+            >
               Continue with GOOGLE
             </button>
 
-            <div className=" text-gray-400 my-2">OR</div>
+            <div className="text-gray-400 my-2">OR</div>
 
             {/* FORM */}
             <div className="w-full ">
@@ -82,7 +112,7 @@ const Register = () => {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
                   >
-                    {showPassword ? "🙈" : "👁️"} {/* simple emoji icon */}
+                    {showPassword ? "🙈" : "👁️"}
                   </button>
                 </div>
 
