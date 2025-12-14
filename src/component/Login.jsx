@@ -1,39 +1,66 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth-api";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const user = { email, password };
+  const [error, setError] = useState("");
 
   const checkLogin = async (e) => {
-    e.preventDefault()
-    const result = await loginUser(user);
-    console.log(result);
+    e.preventDefault();
+    setError("");
+
+    // 🔐 Client-side validation
+    if (!email && !password) {
+      setError("Email and password are required");
+      return;
+    }
+
+    if (!email) {
+      setError("Email is required");
+      return;
+    }
+
+    if (!password) {
+      setError("Password is required");
+      return;
+    }
+
+    try {
+      const result = await loginUser({ email, password });
+
+      // save auth data in context
+      login(result);
+
+      // redirect to homepage
+      navigate("/");
+    } catch (err) {
+      setError("Invalid user or password");
+    }
   };
 
   return (
     <>
-      <div className="w-3/4 mx-auto grid grid-cols-1 md:grid-cols-2 gap-10  m-10 items-start">
+      <div className="w-3/4 mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 m-10 items-start">
+        {/* LEFT: LOGIN */}
         <div className="bg-[#f2f2f2] p-5 rounded-md justify-center items-center">
-          <div className="text-4xl text-center"> Sign in with tomec</div>
+          <div className="text-4xl text-center">Sign in with tomec</div>
 
           <div className="flex flex-col gap-2">
-            <form className="flex flex-col gap-4">
-              {/* EMAIL FIELD + ERROR */}
-              <div>
-                <input
-                  type="email"
-                  placeholder="EMAIL"
-                  className="w-full p-3 border  rounded bg-white text-gray-700 border-gray-300"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+            <form className="flex flex-col gap-4" onSubmit={checkLogin}>
+              {/* EMAIL */}
+              <input
+                type="email"
+                placeholder="EMAIL"
+                className="w-full p-3 border rounded bg-white text-gray-700 border-gray-300"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
               {/* PASSWORD */}
               <input
@@ -43,31 +70,34 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-            </form>
-            <p>Forgot Password</p>
-            <button
-              className="w-1/2   bg-white border border-gray-300 p-1 rounded-full  text-gray-700"
-              onClick={checkLogin}
-            >
-              {" "}
-              Sign in{" "}
-            </button>
-            <p>OR</p>
 
-            <button className=" w-1/2   bg-white border border-gray-300 p-1 rounded-full  text-gray-700">
-              Continue with GOOGLE
-            </button>
+              <p>Forgot Password</p>
+
+              <button
+                type="submit"
+                className="w-1/2 bg-white border border-gray-300 p-1 rounded-full text-gray-700"
+              >
+                Sign in
+              </button>
+
+              {/* ERROR MESSAGE */}
+              {error && (
+                <p className="text-red-500 text-md text-center">{error}</p>
+              )}
+            </form>
           </div>
         </div>
+
+        {/* RIGHT: REGISTER CTA */}
         <div className="bg-[#f2f2f2] p-5 rounded-md">
-          <div className="text-4xl text-center ">Join Tomec tomec</div>
+          <div className="text-4xl text-center">Join Tomec tomec</div>
           <div className="flex flex-col gap-2">
             <p className="text-orange-400 text-center">
               Register and get 500rs off on first order
             </p>
             <p className="text-center">
-              Transform your wardrobe bottoms with our shoes and Accessoriesr
-              and make Dhoom in the marker
+              Transform your wardrobe bottoms with our shoes and Accessories
+              and make Dhoom in the market
             </p>
             <button onClick={() => navigate("/register")}>Sign up</button>
           </div>

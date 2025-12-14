@@ -1,25 +1,45 @@
 const BASE_URL = "http://localhost:8082/v1/api";
 
 export const registerUser = async (userData) => {
-  const response = await fetch(`${BASE_URL}/register`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(userData),
-  });
+  try {
+    const response = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
 
-  return response.text();
+    if (!response.ok) {
+      const error = await response.text();
+      throw new error(error || "Registraton Failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Register error:", error.message);
+    throw error;
+  }
 };
 
-export const loginUser = async (loginData) => {
-  const response = await fetch(`${BASE_URL}/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(loginData),
-  });
+export const loginUser = async (userData) => {
+  try {
+    const response = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
 
-  return response.json();
+    if(!response.ok) {
+      const error = await response.text();
+      throw new error(error || "Login Failed");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Login error:", error.message);
+    throw error;
+  }
 };

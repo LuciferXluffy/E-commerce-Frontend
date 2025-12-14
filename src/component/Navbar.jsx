@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
+import {useAuth} from "../context/AuthContext";
 
 const Navbar = () => {
-
   const navigate = useNavigate();
+  const {isAuthenticated , user , logout} = useAuth();
   return (
     <nav className="w-full bg-white border-b lg:h-[25vh]">
       {/* -------- TOP ROW -------- */}
@@ -15,39 +16,53 @@ const Navbar = () => {
           {/* Right Actions */}
           <div className="flex items-center gap-6 text-sm font-medium lg:absolute lg:right-20">
             <div className="flex gap-1 items-center relative group">
-              <div className="relative group">
-                
-              </div>
               <img src="/person.png" className="h-6 w-6" />
-              <button className="font-semibold text-[1.0625rem] hidden sm:block ">
-                Sign In / Join
-              </button>
-              <div class="absolute top-full right-0 hidden group-hover:block w-70 bg-white shadow z-50">
-                <div className="p-3 flex flex-col gap-2">
-                  <p className="font-semibold text-lg">WELCOME</p>
-                  <p className="font-light">To access account and manage orders</p>
-                  <button onClick={() => navigate("/login")} className="bg-[#eceb0b] w-3/4 h-12 font-bold">LOGIN/SIGNUP</button>
-                </div>
-                <hr class="border-t border-gray-300 m-4"/>
+              <div className="font-semibold text-[1.0625rem] hidden sm:block ">
+                {isAuthenticated ? (
+                  <div> Hi {user?.firstname} </div>
+                ) : (
+                  <div>Sign In / Join</div>
+                )}
+              </div>
+
+              <div className="absolute top-full right-0 hidden group-hover:block w-70 bg-white shadow z-50">
+                {!isAuthenticated ? (
+                  <div className="p-3 flex flex-col gap-2">
+                    <p className="font-semibold text-lg">WELCOME</p>
+                    <p className="font-light">
+                      To access account and manage orders
+                    </p>
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="bg-[#eceb0b] w-3/4 h-12 font-bold"
+                    >
+                      LOGIN/SIGNUP
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-3 flex flex-col gap-2">
+                    <p className="font-light">
+                      To login with another account
+                    </p>
+                    <button
+                      onClick={() => {
+                        logout()
+                        navigate("/")
+                      }}
+                      className="bg-[#eceb0b] w-3/4 h-12 font-bold"
+                    >
+                      LOGOUT
+                    </button>
+                  </div>
+                )}
+                <hr className="border-t border-gray-300 m-4" />
                 <div className="flex flex-col gap-4 p-3 text-lg">
-                  <div>
-                    Track your Order
-                  </div>
-                  <div>
-                    Return and Exchange
-                  </div>
-                  <div>
-                    Design of Our's
-                  </div>
-                  <div>
-                    Care
-                  </div>
-                  <div>
-                    Faq's
-                  </div>
+                  <div>Track your Order</div>
+                  <div>Return and Exchange</div>
+                  <div>Design of Our's</div>
+                  <div>Care</div>
+                  <div>Faq's</div>
                 </div>
-
-
               </div>
             </div>
             <div className="flex gap-1 items-center">

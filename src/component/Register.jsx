@@ -1,46 +1,52 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { registerUser } from "../api/auth-api";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [firstname, setfirstname] = useState("");
+  const [lastname, setlastname] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const user = { firstName, lastName, email, password };
-
-  useEffect(() => {
-    if (!window.google) return;
-
-    google.accounts.id.initialize({
-      client_id:
-        "792908391786-mp945s7l5q09eq7kq13rfrd67rmfmb1r.apps.googleusercontent.com",
-      callback: handleGoogleResponse,
-    });
-    google.accounts.id.renderButton(document.getElementById("googleBtn"), {
-    });
-  }, []);
-
-  const handleGoogleResponse = async (response) => {
-    const token = response.credential;
-
-    const res = await fetch("http://localhost:8082/api/auth/google", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ credential: token }),
-    });
-  };
-  const handleGoogleClick = () => {
-    google.accounts.id.prompt();
-  };
+  const [error, setError] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const result = await registerUser(user);
-    console.log(result);
+    setError("");
+
+    // ✅ FIXED: proper empty field validation
+    if (!firstname || !lastname || !email || !password) {
+      setError("Please fill all the fields");
+      return;
+    }
+
+    // ✅ FIXED: password validation
+    if (password.length < 7) {
+      setError("Password must be at least 7 characters");
+      return;
+    }
+
+    try {
+      const result = await registerUser({
+        firstname,lastname,email,password
+      });
+
+      // auto-login after register
+      login(result);
+      navigate("/");
+    } catch (err) {
+      const message = err?.message || "";
+
+      if (message.toLowerCase().includes("already")) {
+        setError("Email already exists. Please sign in.");
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+    }
   };
 
   return (
@@ -69,34 +75,19 @@ const Register = () => {
             <p className="text-orange-600">
               Register and get 50 Free 4x6 prints!
             </p>
-            <p className="text-sm  text-gray-500">
-              Sign up with Google or Email
-            </p>
-
-            {/* GOOGLE LOGIN BUTTON */}
-            <button
-              onClick={handleGoogleClick}
-              id="googleBtn" className="w-1/2"
-            >
-              Continue with GOOGLE
-            </button>
 
             <div className="text-gray-400 my-2">OR</div>
 
-            {/* FORM */}
-            <div className="w-full ">
+            <div className="w-full">
               <form className="flex flex-col gap-4">
-                {/* EMAIL FIELD + ERROR */}
-                <div>
-                  <input
-                    type="email"
-                    placeholder="EMAIL"
-                    className="w-full p-3 border  rounded bg-white text-gray-700 border-gray-300"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
+                {/* EMAIL */}
+                <input
+                  type="email"
+                  placeholder="EMAIL"
+                  className="w-full p-3 border rounded bg-white text-gray-700 border-gray-300"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
 
                 {/* PASSWORD */}
                 <div className="relative">
@@ -121,32 +112,35 @@ const Register = () => {
                   <input
                     type="text"
                     placeholder="FIRST NAME"
-                    className="p-3 border border-gray-300 rounded bg-white text-gray-700 "
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
+                    className="p-3 border border-gray-300 rounded bg-white text-gray-700"
+                    value={firstname}
+                    onChange={(e) => setfirstname(e.target.value)}
                   />
 
                   <input
                     type="text"
                     placeholder="LAST NAME"
                     className="p-3 border border-gray-300 rounded bg-white text-gray-700"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
+                    value={lastname}
+                    onChange={(e) => setlastname(e.target.value)}
                   />
                 </div>
 
                 {/* SUBMIT */}
                 <div className="flex justify-center mt-4">
                   <button
-                    type="button"
-                    className="bg-[#306e83] hover:bg-[#265a6b] text-white font-bold py-3 px-16 rounded-full uppercase tracking-wide transition"
+                    type="submit"
                     onClick={handleRegister}
+                    className="bg-[#306e83] hover:bg-[#265a6b] text-white font-bold py-3 px-16 rounded-full uppercase tracking-wide transition"
                   >
                     Sign Up
                   </button>
                 </div>
+
+                {/* ERROR */}
+                {error && (
+                  <p className="text-red-500 text-md text-center">{error}</p>
+                )}
               </form>
             </div>
           </div>

@@ -12,7 +12,7 @@ const Homepage = () => {
   // Filter for Tomec brand + take first 4 products
   const tomecProducts = products
     ?.filter((p) => p.brand.toLowerCase() === "tomec")
-    .slice(0, 10);
+    .slice(0, 4);
 
   return (
     <div>

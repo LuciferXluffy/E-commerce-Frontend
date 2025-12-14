@@ -2,8 +2,7 @@ import React from 'react'
 
 const Header = () => {
   return (
-    <div>
-      This is Header
+    <div className='bg-[#024455] w-full h-[5vh]'>
     </div>
   )
 }
