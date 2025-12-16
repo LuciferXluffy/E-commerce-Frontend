@@ -25,7 +25,7 @@ const Navbar = () => {
                 )}
               </div>
 
-              <div className="absolute top-full right-0 hidden group-hover:block w-70 bg-white shadow z-50">
+              <div className="absolute top-full right-0  hidden group-hover:block w-70 bg-white shadow z-50">
                 {!isAuthenticated ? (
                   <div className="p-3 flex flex-col gap-2">
                     <p className="font-semibold text-lg">WELCOME</p>

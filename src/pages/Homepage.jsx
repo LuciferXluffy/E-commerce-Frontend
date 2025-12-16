@@ -47,7 +47,7 @@ const Homepage = () => {
         ))}
       </div>
       <h1 className="text-center m-4 font-bold text-[20px]"> BRAND's </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 m-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-3">
         {brandProducts.map((product) => (
           <Card
             key={product.id}

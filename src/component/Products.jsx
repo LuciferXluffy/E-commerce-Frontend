@@ -7,29 +7,49 @@ const Products = () => {
   const { brand } = useParams(); // <-- comes from /b/:brand
   const { data: products, loading, error } = useFetch(getProducts, []);
 
+  // getProducts().then(data => console.log(data))
+  // .then(data => data.text)
+  // .then(data => console.log(data))
+  // )
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
-  const filteredProducts = products?.filter((p) => p.brand.toLowerCase() == brand);
-  
+  const filteredProducts = products?.filter(
+    (p) => p.brand.toLowerCase() == brand
+  );
 
   return (
-    <div className="p-10">
-      <h1 className="text-5xl text-red-500 text-center p-5">
-        WELCOME TO PRODUCT PAGE : {brand.toUpperCase()}
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredProducts.map((product) => (
-          <Card
-            key={product.id}
-            title={product.title}
-            price={product.price}
-            imgUrl={"http://localhost:8081" + product.frontImg}
-            brands={product.brand}
-          />
-        ))}
+    <>
+      <div className="w-full overflow-hidden">
+        <img
+          src={"/product.png"}
+          alt="Dropping Soon Shoes"
+          className="
+          w-full
+          sm:h-[378.91px]
+          md:h-[px]
+          lg:h-[385px]
+        "
+        />
       </div>
-    </div>
+      <div className="p-10">
+        <h1 className="text-2xl p-5 text-gray-700">
+        {brand.toUpperCase()}
+        </h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => (
+            <Card
+              key={product.id}
+              title={product.title}
+              price={product.price}
+              imgUrl={"http://localhost:8081" + product.frontImg}
+              brands={product.brand}
+            />
+          ))}
+        </div>
+      </div>
+    </>
   );
 };
 
