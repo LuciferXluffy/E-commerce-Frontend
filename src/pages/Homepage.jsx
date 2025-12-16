@@ -15,9 +15,19 @@ const Homepage = () => {
     ?.filter((p) => p.brand.toLowerCase() === "tomec")
     .slice(0, 4);
 
-  const nike = products?.find((p) => p.brand.toLowerCase() === "nike");
-  const addidas = products?.find((p) => p.brand.toLowerCase() === "addidas");
-  const puma = products?.find((p) => p.brand.toLowerCase() === "puma");
+  const brandMap = new Map();
+
+  products?.forEach((product) => {
+    const brand = product.brand.toLowerCase();
+    if (!brandMap.has(brand) && brand != "tomec") {
+      brandMap.set(brand, product); // first product of that brand
+    }
+  });
+
+  const brandProducts = Array.from(brandMap.values());  // okay here we have extracted one one value of ecah brand product
+  console.log(brandProducts);
+  
+
 
   return (
     <div>
@@ -33,33 +43,19 @@ const Homepage = () => {
             title={product.title}
             price={product.price}
             imgUrl={"http://localhost:8081" + product.frontImg}
-            brands={'tomec'}
+            brands={product.brand}
           />
         ))}
       </div>
       <h1 className="text-center m-4 font-bold text-[20px]"> BRAND's </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 m-3">
-        <Card
-          key={nike.id}
-          title={nike.title}
-          price={nike.price}
-          imgUrl={"http://localhost:8081" + nike.frontImg}
-          brands={'nike'}
-        />
-        <Card
-          key={addidas.id}
-          title={addidas.title}
-          price={addidas.price}
-          imgUrl={"http://localhost:8081" + addidas.frontImg}
-          brands={'addidas'}
-        />
-        <Card
-          key={puma.id}
-          title={puma.title}
-          price={puma.price}
-          imgUrl={"./puma1.png"}
-          brands={'puma'}
-        />
+        {brandProducts.map((product) => (
+          <Card
+            key={product.id}
+            imgUrl={"http://localhost:8081" + product.frontImg}
+            brands={product.brand}
+          />
+        ))}
       </div>
     </div>
   );
