@@ -1,9 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import {useAuth} from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const {isAuthenticated , user , logout} = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
+
+  const [open, setOpen] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const closeMenu = () => setOpen(false);
+    window.addEventListener("click", closeMenu);
+    return () => window.removeEventListener("click", closeMenu);
+  }, []);
+
   return (
     <nav className="w-full bg-white border-b lg:h-[20vh]">
       {/* -------- TOP ROW -------- */}
@@ -15,9 +26,16 @@ const Navbar = () => {
 
           {/* Right Actions */}
           <div className="flex items-center gap-6 text-sm font-medium lg:absolute lg:right-20">
-            <div className="flex gap-1 items-center relative group">
+            {/* Profile */}
+            <div
+              className="flex gap-1 items-center relative cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpen(!open);
+              }}
+            >
               <img src="/person.png" className="h-6 w-6" />
-              <div className="font-semibold text-[1.0625rem] hidden sm:block ">
+              <div className="font-semibold text-[1.0625rem] hidden sm:block">
                 {isAuthenticated ? (
                   <div> Hi {user?.firstname} </div>
                 ) : (
@@ -25,7 +43,13 @@ const Navbar = () => {
                 )}
               </div>
 
-              <div className="absolute top-full right-0  hidden group-hover:block w-70 bg-white shadow z-50">
+              {/* Dropdown */}
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className={`absolute top-full right-0 w-70 bg-white shadow z-50 ${
+                  open ? "block" : "hidden"
+                }`}
+              >
                 {!isAuthenticated ? (
                   <div className="p-3 flex flex-col gap-2">
                     <p className="font-semibold text-lg">WELCOME</p>
@@ -46,8 +70,8 @@ const Navbar = () => {
                     </p>
                     <button
                       onClick={() => {
-                        logout()
-                        navigate("/")
+                        logout();
+                        navigate("/");
                       }}
                       className="bg-[#eceb0b] w-3/4 h-12 font-bold"
                     >
@@ -55,7 +79,9 @@ const Navbar = () => {
                     </button>
                   </div>
                 )}
+
                 <hr className="border-t border-gray-300 m-4" />
+
                 <div className="flex flex-col gap-4 p-3 text-lg">
                   <div>Track your Order</div>
                   <div>Return and Exchange</div>
@@ -65,6 +91,8 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
+
+            {/* Cart */}
             <div className="flex gap-1 items-center">
               <img src="/cart.png" className="h-6 w-6" />
               <button className="font-semibold text-[1.0625rem] hidden sm:block">

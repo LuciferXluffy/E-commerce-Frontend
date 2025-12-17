@@ -18,7 +18,7 @@ const Card = ({ title, price, imgUrl, brands }) => {
     <>
       {brands === "tomec" || location.pathname.endsWith("/") ? (
         <div
-          className="relative w-full h-[60vh] border-[0.5px] bg-cover bg-center"
+          className="relative w-full h-[60vh] border-[0.5px] bg-cover bg-center cursor-pointer"
           style={{ backgroundImage: `url(${imgUrl})` }}
           onClick={handleClick}
         >
